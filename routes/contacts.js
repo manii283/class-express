@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var mysql = require('mysql');
+var mysql = require("mysql");
 
 var con = mysql.createConnection({
   host: "localhost",
@@ -9,13 +9,11 @@ var con = mysql.createConnection({
   database: "pothfolio",
 });
 
-
-/ GET users listing. /
+/ GET users listing. /;
 router.get("/", function (req, res, next) {
   con.connect(function (err) {
     con.query("SELECT * FROM contacts", function (err, result, fields) {
       console.log(result);
-      // res.writeHead(200, headers);
       res.write(JSON.stringify(result));
       return res.end();
     });
@@ -23,18 +21,52 @@ router.get("/", function (req, res, next) {
   // res.send("contactlist");
 });
 
-
 router.post("/add", function (req, res, next) {
   res.send("respond with a contact add");
 });
 
+router.post("/edit", function (req, res, next) {
+  console.log("manisha >>", req.body);
+  con.connect(function (err) {
+    con.query(
+      "update contacts set name='" +
+        req.body.name +
+        "', email='" +
+        req.body.email +
+        "', phone='" +
+        req.body.phone +
+        "', message='" +
+        req.body.message +
+        "' where id=" +
+        req.body.id,
+      function (err, result, fields) {
+        console.log(result);
+        console.log(err);
 
-router.put("/edit", function (req, res, next) {
-  res.send("respond with a contact edit");
+        res.send(JSON.stringify({}));
+        // res.write(JSON.stringify(result[0]));
+        // return res.end();
+      }
+    );
+  });
 });
 
-router.put("/view", function (req, res, next) {
-  res.send("respond with a contact view");
+router.get("/view/:id", function (req, res, next) {
+  console.log(req.params.id);
+
+  con.connect(function (err) {
+    con.query(
+      "SELECT * FROM contacts where id=" + req.params.id,
+      function (err, result, fields) {
+        console.log(result);
+        // res.write(JSON.stringify(result[0]));
+        // return res.end();
+        res.send(JSON.stringify(result[0]));
+      }
+    );
+  });
+
+  // res.send("respond with a contact view");
 });
 // localhost:3000/books/delete
 router.delete("/delete", function (req, res, next) {
