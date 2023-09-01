@@ -18,7 +18,6 @@ router.get("/", function (req, res, next) {
       return res.end();
     });
   });
-  // res.send("contactlist");
 });
 
 router.post("/add", function (req, res, next) {
@@ -42,10 +41,7 @@ router.post("/edit", function (req, res, next) {
       function (err, result, fields) {
         console.log(result);
         console.log(err);
-
         res.send(JSON.stringify({}));
-        // res.write(JSON.stringify(result[0]));
-        // return res.end();
       }
     );
   });
@@ -53,23 +49,26 @@ router.post("/edit", function (req, res, next) {
 
 router.get("/view/:id", function (req, res, next) {
   console.log(req.params.id);
-
   con.connect(function (err) {
     con.query(
       "SELECT * FROM contacts where id=" + req.params.id,
       function (err, result, fields) {
         console.log(result);
-        // res.write(JSON.stringify(result[0]));
-        // return res.end();
         res.send(JSON.stringify(result[0]));
       }
     );
   });
 
-  // res.send("respond with a contact view");
 });
-// localhost:3000/books/delete
-router.delete("/delete", function (req, res, next) {
+router.delete("/delete/:id", function (req, res, next) {
+  con.query("DELETE FROM contacts WHERE id=" + req.params.id ,
+  function (err, result, fields) {
+    console.log(result);
+    res.write(JSON.stringify(result));
+    return res.end();
+   
+  }
+  )
   res.send("respond with a contact delete");
 });
 
