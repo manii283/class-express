@@ -21,11 +21,34 @@ router.get("/", function (req, res, next) {
 });
 
 router.post("/add", function (req, res, next) {
-  res.send("respond with a contact add");
+  req.on("data", (chunk) => {
+    console.log(chunk.toString());
+    const requstBody = JSON.parse(chunk.toString());
+  con.connect(function (err) {
+    con.query(
+      "INSERT INTO contacts (name,email,phone,message) VALUES ('" +
+        requstBody.name +
+        "','" +
+        requstBody.email +
+        "','" +
+        requstBody.phone +
+        "','" +
+        requstBody.message +
+        "')",
+      function (err, result, fields) {
+        console.log(result);
+        res.write(
+          JSON.stringify({ message: "data inserted successfully" })
+        );
+        return res.end();
+      }
+    );
+  });
+})
 });
 
 router.post("/edit", function (req, res, next) {
-  console.log("manisha >>", req.body);
+  // console.log("manisha >>", req.body);
   con.connect(function (err) {
     con.query(
       "update contacts set name='" +
