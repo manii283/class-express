@@ -58,17 +58,18 @@ router.get("/view/:id", function (req, res, next) {
       }
     );
   });
-
 });
 router.delete("/delete/:id", function (req, res, next) {
-  con.query("DELETE FROM contacts WHERE id=" + req.params.id ,
-  function (err, result, fields) {
-    console.log(result);
-    res.write(JSON.stringify(result));
-    return res.end();
-   
-  }
-  )
+  con.connect(function (err) {
+    con.query(
+      "DELETE FROM contacts WHERE id=" + req.params.id,
+      function (err, result, fields) {
+        console.log("delete");
+        res.write(JSON.stringify(result));
+        return res.end();
+      }
+    );
+  });
   res.send("respond with a contact delete");
 });
 
